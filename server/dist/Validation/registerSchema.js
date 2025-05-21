@@ -1,0 +1,26 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.registerSchema = void 0;
+const zod_1 = require("zod");
+exports.registerSchema = zod_1.z.object({
+    username: zod_1.z
+        .string()
+        .nonempty("Felhasználónév megadása kötelező!")
+        .trim()
+        .min(4, "Minimum 4 karakter!")
+        .max(15, "Maximum 15 karakter!"),
+    email: zod_1.z
+        .string()
+        .nonempty("Email cím megadása kötelező!")
+        .trim()
+        .email("Hibás email cím!")
+        .max(25, "Maximum 25 karakter!"),
+    password: zod_1.z
+        .string()
+        .min(6, "A jelszó legalább 6 karakter legyen!")
+        .max(25, "Maximum 25 karakter!")
+    //.regex(/[A-Z]/, "Kell legalább egy nagybetű!")
+    //.regex(/[a-z]/, "Kell legalább egy kisbetű!")
+    //.regex(/[0-9]/, "Kell legalább egy szám!")
+    //.regex(/[^A-Za-z0-9]/, "Kell egy speciális karakter!"),
+});
