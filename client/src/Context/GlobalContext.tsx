@@ -1,35 +1,90 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
-import { getCurrentUser } from "../Functions/getCurrentUser";
-import { BlogType } from "../types/types";
+import axios from "axios";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 
-type GlobalContextType = {
-  currentUser: string;
-  setCurrentUser: React.Dispatch<React.SetStateAction<string>>;
-  blogs: BlogType[];
-  setBlogs: React.Dispatch<React.SetStateAction<BlogType[] | []>>
+type User = {
+  username: string;
+  role: string;
 };
 
-const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
+type GlobalContextType = {
+  user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  errorMsg: string;
+  setErrorMsg: React.Dispatch<React.SetStateAction<string>>;
+  accessToken: string;
+  setAccessToken: React.Dispatch<React.SetStateAction<string>>;
+  isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  isModalOpen: boolean;
+  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-export function ContextProvider({ children }: { children: ReactNode }) {
-  const [currentUser, setCurrentUser] = useState("");
-  const [blogs, setBlogs] = useState<BlogType[] | []>([]);
-
-  useEffect(()=> {
-    getCurrentUser(setCurrentUser)
-  }, [])
-
-  return (
-    <GlobalContext.Provider value={{ currentUser, setCurrentUser, blogs, setBlogs }}>
-      {children}
-    </GlobalContext.Provider>
-  );
-}
+export const GlobalContext = createContext<GlobalContextType | undefined>(
+  undefined
+);
 
 export function useGlobalContext() {
   const context = useContext(GlobalContext);
   if (!context) {
-    throw new Error("useGlobalContext must be used within a ContextProvider");
+    throw new Error("useGlobalContext must be used within a GlobalProvider");
   }
   return context;
+}
+
+export function GlobalProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [accessToken, setAccessToken] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchAccessToken = async () => {
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/token",
+          {},
+          { withCredentials: true }
+        );
+
+        if (response.status === 200) {
+          setUser(response.data.user);
+          setAccessToken(response.data.accessToken);
+          setErrorMsg("");
+          // Például: navigate("/my-blogs");
+        }
+      } catch (error) {
+        //console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAccessToken();
+  }, []);
+
+  return (
+    <GlobalContext.Provider
+      value={{
+        user,
+        setUser,
+        errorMsg,
+        setErrorMsg,
+        accessToken,
+        setAccessToken,
+        isLoading,
+        setIsLoading,
+        isModalOpen,
+        setIsModalOpen,
+      }}
+    >
+      {children}
+    </GlobalContext.Provider>
+  );
 }

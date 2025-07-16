@@ -1,6 +1,6 @@
-import { z } from "zod";
+import z from "zod";
 
-export const loginSchema = z.object({
+export const loginFormSchema = z.object({
   username: z
     .string()
     .nonempty("Felhasználónév megadása kötelező!")
@@ -14,4 +14,4 @@ export const loginSchema = z.object({
     .trim(),
 });
 
-export type LoginFormData = z.infer<typeof loginSchema>;
+export type LoginFormData = z.infer<typeof loginFormSchema>;

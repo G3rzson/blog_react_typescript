@@ -1,62 +1,87 @@
 import { Request, Response } from "express";
-import { loginSchema } from "../Validation/loginSchema";
-import bcrypt from "bcrypt";
 import RegisterUserModel from "../DB/registerUserSchema";
+import bcrypt from "bcryptjs";
+import { loginSchema } from "../Validation/loginSchema";
+import dotenv from "dotenv";
+import { generateAccessToken } from "../functions/generateAccessToken";
+import { generateRefreshToken } from "../functions/generateRefreshToken";
+dotenv.config();
 
-type UserType = {
-  username: string;
-  password: string;
-};
+export async function loginUser(req: Request, res: Response) {
+  //console.log(req.body);
 
-export async function login(req: Request<{}, {}, UserType>, res: Response) {
-  const user = loginSchema.safeParse(req.body);
+  // validálás
+  const parsed = loginSchema.safeParse(req.body);
+  //console.log(parsed);
 
-  if (!user.success) {
+  // validálás ellenőrzése
+  if (!parsed.success) {
     res.status(400).json({
-      message: "Hibás adatok",
-      errors: user.error.format(),
+      success: false,
+      error: parsed.error.flatten().fieldErrors,
     });
     return;
   }
 
-  const { username, password } = user.data;
+  // user data
+  const { username, password } = parsed.data;
 
   try {
+    // felhasználó ellenőrzése
     const existingUser = await RegisterUserModel.findOne({ username });
 
     if (!existingUser) {
-      res.status(400).json({ error: "Felhasználó nem található!" });
+      res.status(401).json({
+        success: false,
+        error: "Nincs ilyen Felhasználó!",
+      });
       return;
     }
 
-    const isPasswordValid = await bcrypt.compare(
-      password,
-      existingUser.password
-    );
+    // jelszó ellenőrzése
+    const passwordMatch = await bcrypt.compare(password, existingUser.password);
 
-    if (!isPasswordValid) {
-      res.status(401).json({ error: "Hibás jelszó!" });
+    if (!passwordMatch) {
+      res.status(401).json({
+        success: false,
+        error: "Hibás jelszó!",
+      });
       return;
     }
 
-    req.session.user = {
-      id: existingUser._id.toString(),
-      username: existingUser.username,
-    };
+    // környezeti változók ellenőrzése
+    if (!process.env.ACCESS_TOKEN || !process.env.REFRESH_TOKEN) {
+      res.status(500).json({ message: "Hiányzó környezeti változók!" });
+      return;
+    }
 
-    // ki van bejelentkezve?
-    //console.log(req.session.user.username)
+    // access token létrehozása
+    const accessToken = generateAccessToken(username);
 
-    res.status(200).json({
-      message: "Sikeres bejelentkezés",
-      user: req.session.user,
-    });
-    return;
-  } catch (error) {
-    console.error("Hiba a beléptetés során:", error);
+    // refresh token létrehozása
+    const refreshToken = generateRefreshToken(username);
+
+    // válasz küldése cookie beállítása
     res
-      .status(500)
-      .json({ error: "Valami hiba történt a bejelentkezés közben" });
+      .cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 1 * 24 * 60 * 60 * 1000, // 1 nap
+      })
+      .json({
+        success: true,
+        accessToken,
+        user: {
+          username: existingUser.username,
+          role: existingUser.role,
+        },
+      });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: "Valami hiba történt. Próbáld újra később!",
+    });
     return;
   }
 }

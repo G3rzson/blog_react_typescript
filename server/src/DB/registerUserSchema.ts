@@ -1,27 +1,15 @@
-import mongoose from "mongoose";
+import { Schema, model, models } from "mongoose";
+import { RegisterFormData } from "../Validation/registerSchema";
 
-type User = {
-  userId?: string;
-  username: string;
-  email: string;
-  password: string;
-}
-
-const newUserSchema = new mongoose.Schema<User>({
-  userId: {
-    type: String,
-  },
-  username: {
-    type: String,
-  },
-  email: {
-    type: String,
-  },
-  password: {
-    type: String,
-  },
+// Schema
+const registerUserSchema = new Schema<RegisterFormData>({
+  username: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  role: { type: String, enum: ["author", "admin"] },
 });
-
-const RegisterUserModel = mongoose.model("User", newUserSchema);
+// Model
+const RegisterUserModel =
+  models.User || model<RegisterFormData>("User", registerUserSchema);
 
 export default RegisterUserModel;

@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
 
-export function logout(req: Request, res: Response) {
-  req.session.destroy((err) => {
-    if (err) {
-      res.status(500).json({ message: "Nem sikerült kijelentkezni" });
-      return 
-    }
-    res.clearCookie("connect.sid"); // alapértelmezett session cookie név
-    res.json({ message: "Sikeres kijelentkezés" });
-    return 
-  });
+export async function logoutUser(req: Request, res: Response) {
+  res
+    .clearCookie("refreshToken", {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production", // csak production-ben true
+    })
+    .status(200)
+    .json({ message: "Sikeres kijelentkezés" });
+  return;
 }

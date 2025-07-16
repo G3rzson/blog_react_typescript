@@ -1,42 +1,61 @@
-import { RequestHandler } from "express";
-import RegisterUserModel from "../DB/registerUserSchema";
+import { Request, Response } from "express";
 import { registerSchema } from "../Validation/registerSchema";
-import bcrypt from "bcrypt";
-import { ZodError } from "zod";
+import RegisterUserModel from "../DB/registerUserSchema";
+import bcrypt from "bcryptjs";
 
-export const createUser: RequestHandler = async (req, res) => {
+export async function registerUser(req: Request, res: Response) {
+  //console.log(req.body);
+
+  // validálás
+  const parsed = registerSchema.safeParse(req.body);
+  //console.log(parsed);
+
+  // validálás ellenőrzése
+  if (!parsed.success) {
+    res.status(400).json({
+      success: false,
+      error: parsed.error.flatten().fieldErrors,
+    });
+    return;
+  }
+
+  // user data
+  const { username, email, password, role } = parsed.data;
+
   try {
-    const validateData = registerSchema.parse(req.body);
-    const { username, email, password } = validateData;
-
-    const existingUsername = await RegisterUserModel.findOne({ username });
-    if (existingUsername) {
-      res.status(400).json({ error: "Felhasználónév már foglalt!" });
-      return;
-    }
-
-    const existingEmail = await RegisterUserModel.findOne({ email });
-    if (existingEmail) {
-      res.status(400).json({ error: "Email már foglalt!" });
-      return;
-    }
-
-    const hashed = await bcrypt.hash(password, 10);
-
-    const newUser = new RegisterUserModel({
-      username,
-      email,
-      password: hashed,
+    // felhasználó ellenőrzése
+    const existingUser = await RegisterUserModel.findOne({
+      $or: [{ email }, { username }],
     });
 
-    await newUser.save();
-    res.status(201).json({ message: "Sikeres regisztráció!" });
-  } catch (err) {
-    if (err instanceof ZodError) {
-      res.status(400).json({ error: err.errors });
+    if (existingUser) {
+      res.status(400).json({
+        success: false,
+        error: "Ez a felhasználónév vagy email már foglalt!",
+      });
       return;
     }
 
-    res.status(500).json({ error: "Hiba történt a regisztráció során." });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    //console.log(hashedPassword);
+
+    await RegisterUserModel.create({
+      username,
+      email,
+      password: hashedPassword,
+      role,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Sikeres regisztráció",
+    });
+    return;
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: "Valami hiba történt. Próbáld újra később.",
+    });
+    return;
   }
-};
+}

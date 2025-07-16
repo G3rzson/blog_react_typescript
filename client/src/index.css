@@ -1,49 +1,36 @@
 @import "tailwindcss";
 
-/* saját osztály hozzáadás */
 @layer base {
-  .pageTitle {
-    color: white;
-    font-size: 2rem;
+  .title {
     text-align: center;
+    font-size: 3rem;
     margin: 2rem 0;
   }
-  .input {
-    color: white;
-    padding: 0.5rem;
-    width: 100%;
-    border-radius: 0.25rem;
-    background-color: #27272a;
+  .form {
+    width: 20rem;
+    background-color: rgb(39, 39, 42);
+    color: rgb(212, 212, 216);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 1rem;
+  }
+  .formField {
+    display: flex;
+    flex-direction: column;
+  }
+  .formInput {
+    background-color: rgb(212, 212, 216);
+    color: rgb(39, 39, 42);
     border: none;
     outline: none;
-  }
-  .submitBtn {
-    color: white;
-    padding: 0.5rem;
-    width: 100%;
     border-radius: 0.25rem;
-    background-color: #016630;
-    border: none;
-    outline: none;
-    transition: all 0.3s ease-in-out;
+    padding: 0.25rem;
   }
-  .submitBtn:hover {
-    background-color: #00863e;
-    cursor: pointer;
-  }
-  .submitBtn:disabled {
-    background-color: #27272a;
-    cursor: not-allowed;
-  }
-
   .errorMsg {
-    color: orange;
-  }
-
-  .link:hover{
-    text-decoration: underline;
-    color: orange;
-    cursor: pointer;
+    color: rgb(255, 100, 103);
+    font-size: 0.875rem;
   }
 }
-

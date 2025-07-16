@@ -1,10 +1,10 @@
-import RegisterForm from "../Components/RegisterForm";
+import RegisterForm from "../Components/User/RegisterForm";
 
 export default function Register() {
   return (
-    <div>
-      <h1 className="pageTitle">Regisztráció</h1>
+    <>
+      <h1 className="title">Regisztráció</h1>
       <RegisterForm />
-    </div>
-  )
+    </>
+  );
 }

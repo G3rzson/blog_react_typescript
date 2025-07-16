@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
-import cors from "cors"
-import session from "express-session"
+import cors from "cors";
+import cookieParser from "cookie-parser";
 
 // Környezeti változók betöltése
 dotenv.config();
@@ -10,51 +10,30 @@ const PORT = process.env.PORT;
 const app = express();
 
 // connect to MongoDB
-import { connectToDB } from "./DB/ConnectToDB"
+import { connectToDB } from "./DB/ConnectToDB";
 connectToDB();
 
-// middleware for json and cors 
+// middleware for json, cors, cookies
 app.use(express.json());
+app.use(cookieParser());
 app.use(
   cors({
     origin: "http://localhost:5173", // vagy ahol a frontend fut
-    credentials: true, // fontos a session működéséhez
+    credentials: true, // ha küldesz cookie-t / auth header-t
   })
 );
-
-// session
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET as string,  // Tipizálás, hogy biztosan string lesz
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: false, // fejlesztéshez: https esetén állítsd true-ra
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60, // 1 óra
-      sameSite: 'lax', // vagy 'none' ha https
-    },
-  })
-);
-
-// middlewares
-import { isAuthenticated } from "./middlewares/isAuth";
 
 // routes import
-import {createUser} from "./Routes/register"
-import { login } from "./Routes/login";
-import { logout } from "./Routes/logout";
-import { profile } from "./Routes/profile";
-import { newBlogs } from "./Routes/newblogs";
-import { getBlogs } from "./Routes/getBlogs";
+import { registerUser } from "./Routes/register";
+import { loginUser } from "./Routes/login";
+import { tokenUpdate } from "./Routes/token";
+import { logoutUser } from "./Routes/logout";
 
 // routes
-app.get('/', getBlogs);
-app.get('/profile', isAuthenticated, profile);
-app.post('/register', createUser);
-app.post('/login', login);
-app.post('/logout', logout);
-app.post('/newblog',isAuthenticated, newBlogs);
+app.post("/user/register", registerUser);
+app.post("/user/login", loginUser);
+app.post("/token", tokenUpdate);
+app.post("/user/logout", logoutUser);
 
 app.listen(PORT, () => {
   console.log(`Szerver fut a http://localhost:${PORT} címen`);

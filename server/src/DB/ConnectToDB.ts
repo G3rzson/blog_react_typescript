@@ -1,21 +1,28 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-
-// Környezeti változók betöltése
 dotenv.config();
+const MONGO_URI = process.env.MONGO_URI!;
 
-const MONGO_URL = process.env.MONGO_URL;
+if (!MONGO_URI) {
+  throw new Error("A MONGO_URI nincs beállítva.");
+}
+
+let isConnected = false;
 
 export async function connectToDB() {
-  if (!MONGO_URL) {
+  if (isConnected) return;
+
+  if (mongoose.connection.readyState === 1) {
+    isConnected = true;
     return;
   }
 
   try {
-    await mongoose.connect(MONGO_URL).then(()=> {
-      console.log("Kapcsolódás sikeres");
-    });
+    await mongoose.connect(MONGO_URI);
+    isConnected = true;
+    console.log("MongoDB kapcsolódás sikeres");
   } catch (err) {
-    console.error("Kapcsolódási hiba:", err);
+    console.error("MongoDB kapcsolódás sikertelen:", err);
+    throw err;
   }
 }

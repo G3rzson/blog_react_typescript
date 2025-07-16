@@ -1,10 +1,10 @@
-import LoginForm from "../Components/LoginForm";
+import LoginForm from "../Components/User/LoginForm";
 
 export default function Login() {
   return (
-    <div>
-      <h1 className="pageTitle">Bejelentkezés</h1>
+    <>
+      <h1 className="title">Bejelentkezés</h1>
       <LoginForm />
-    </div>
+    </>
   );
 }
