@@ -1,10 +1,10 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import CreateBlogForm from "../Components/Blog/CreateBlogForm";
 import { useGlobalContext } from "../Context/GlobalContext";
 import { useEffect } from "react";
 import Loading from "../Components/Loading";
-import OwnBlogs from "../Components/Blog/OwnBlogs";
 
-export default function MyBlogs() {
+export default function CreateBlog() {
   const { user, isLoading } = useGlobalContext();
   const navigate = useNavigate();
 
@@ -21,17 +21,10 @@ export default function MyBlogs() {
       </div>
     );
   }
-
   return (
     <div>
-      <Link
-        to={"/blog/create"}
-        className="bg-green-600 hover:bg-green-500 duration-300 text-xl text-center block mt-5 mx-4 text-zinc-800 p-2 cursor-pointer rounded"
-      >
-        Új blog létrehozása
-      </Link>
-
-      <OwnBlogs />
+      <h1 className="title">Blog létrehozása</h1>
+      <CreateBlogForm />
     </div>
   );
 }

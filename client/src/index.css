@@ -3,8 +3,8 @@
 @layer base {
   .title {
     text-align: center;
-    font-size: 3rem;
-    margin: 2rem 0;
+    font-size: 2.5rem;
+    margin: 1rem 0;
   }
   .form {
     width: 20rem;

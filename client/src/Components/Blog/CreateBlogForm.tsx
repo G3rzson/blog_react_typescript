@@ -1,46 +1,46 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { LoginFormData, loginFormSchema } from "../../Validation/loginUserForm";
 import { useGlobalContext } from "../../Context/GlobalContext";
 import Modal from "../Modal";
+import { BlogFormData, blogFormSchema } from "../../Validation/blogForm";
+import { useEffect } from "react";
 
-export default function LoginForm() {
+export default function CreateBlogForm() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginFormSchema),
+  } = useForm<BlogFormData>({
+    resolver: zodResolver(blogFormSchema),
   });
   const navigate = useNavigate();
-  const {
-    errorMsg,
-    setErrorMsg,
-    setUser,
-    setAccessToken,
-    setIsModalOpen,
-    isModalOpen,
-  } = useGlobalContext();
+  const { errorMsg, setErrorMsg, setIsModalOpen, isModalOpen } =
+    useGlobalContext();
 
-  async function onSubmit(data: LoginFormData) {
+  const [title, content] = watch(["title", "content"]);
+  useEffect(() => {
+    if (title || content) {
+      setErrorMsg("");
+    }
+  }, [title, content]);
+
+  async function onSubmit(data: BlogFormData) {
     setIsModalOpen(true);
     //console.log(data);
     try {
       const response = await axios.post(
-        "http://localhost:8000/user/login",
+        "http://localhost:8000/blog/create",
         data,
         {
           withCredentials: true,
         }
       );
-
-      if (response.status === 200) {
-        setUser(response.data.user);
-        setAccessToken(response.data.accessToken);
-        setErrorMsg("");
-        navigate("/my-blogs");
+      //console.log(response);
+      if (response.data.success) {
+        navigate("/");
       }
     } catch (err) {
       // axios hibakezelés
@@ -66,31 +66,31 @@ export default function LoginForm() {
       <form className="form" onSubmit={handleSubmit(onSubmit)}>
         {/* Username */}
         <div className="formField">
-          <label htmlFor="username">Username:</label>
+          <label htmlFor="title">Cím:</label>
           <input
-            {...register("username")}
+            {...register("title")}
             className="formInput"
             type="text"
-            name="username"
-            id="username"
+            name="title"
+            id="title"
           />
-          {errors.username && (
-            <span className="errorMsg">{errors.username.message}</span>
+          {errors.title && (
+            <span className="errorMsg">{errors.title.message}</span>
           )}
         </div>
 
         {/* Password */}
         <div className="formField">
-          <label htmlFor="password">Password:</label>
-          <input
-            {...register("password")}
+          <label htmlFor="content">Tartalom:</label>
+          <textarea
+            {...register("content")}
             className="formInput"
-            type="password"
-            name="password"
-            id="password"
+            name="content"
+            id="content"
+            rows={8}
           />
-          {errors.password && (
-            <span className="errorMsg">{errors.password.message}</span>
+          {errors.content && (
+            <span className="errorMsg">{errors.content.message}</span>
           )}
         </div>
 
@@ -102,18 +102,8 @@ export default function LoginForm() {
           disabled={isSubmitting}
           className="bg-green-600 hover:bg-green-500 duration-300 text-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-400 p-2 cursor-pointer w-full rounded mt-3"
         >
-          Bejelentkezés
+          Létrehozás
         </button>
-        <div className="flex justify-between text-sm">
-          <p>Még nincs fiókod?</p>
-          <Link
-            className="hover:text-yellow-300 duration-300 underline"
-            to={"../user/register"}
-          >
-            Regisztráció
-          </Link>
-        </div>
-
         <Modal isOpen={isModalOpen} />
       </form>
     </>
