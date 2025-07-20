@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { BlogType } from "../Pages/Home";
+import { BlogType } from "../../Pages/Home";
 
 type ModalProps = {
   isOpen: boolean;

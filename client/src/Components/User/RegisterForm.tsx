@@ -6,13 +6,12 @@ import {
   type RegisterFormData,
   registerFormSchema,
 } from "../../Validation/registerUserForm";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useGlobalContext } from "../../Context/GlobalContext";
 import Modal from "../Modal";
 
 export default function RegisterForm() {
-  const { errorMsg, setErrorMsg, setIsModalOpen, isModalOpen } =
-    useGlobalContext();
+  const { setIsModalOpen, isModalOpen } = useGlobalContext();
 
   const {
     register,
@@ -28,6 +27,7 @@ export default function RegisterForm() {
       role: "author",
     } as RegisterFormData,
   });
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const [username, email] = watch(["username", "email"]);

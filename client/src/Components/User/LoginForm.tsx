@@ -5,6 +5,7 @@ import axios from "axios";
 import { LoginFormData, loginFormSchema } from "../../Validation/loginUserForm";
 import { useGlobalContext } from "../../Context/GlobalContext";
 import Modal from "../Modal";
+import { useState } from "react";
 
 export default function LoginForm() {
   const {
@@ -14,15 +15,10 @@ export default function LoginForm() {
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginFormSchema),
   });
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const navigate = useNavigate();
-  const {
-    errorMsg,
-    setErrorMsg,
-    setUser,
-    setAccessToken,
-    setIsModalOpen,
-    isModalOpen,
-  } = useGlobalContext();
+  const { setUser, setAccessToken, setIsModalOpen, isModalOpen } =
+    useGlobalContext();
 
   async function onSubmit(data: LoginFormData) {
     setIsModalOpen(true);
@@ -40,7 +36,7 @@ export default function LoginForm() {
         setUser(response.data.user);
         setAccessToken(response.data.accessToken);
         setErrorMsg("");
-        navigate("/my-blogs");
+        navigate("/blog/my");
       }
     } catch (err) {
       // axios hibakezelés

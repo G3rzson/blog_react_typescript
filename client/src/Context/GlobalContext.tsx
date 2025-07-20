@@ -6,6 +6,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { BlogType } from "../Pages/Home";
 
 type User = {
   username: string;
@@ -23,6 +24,8 @@ type GlobalContextType = {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   isModalOpen: boolean;
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  editBlog: BlogType | null;
+  setEditBlog: React.Dispatch<React.SetStateAction<BlogType | null>>;
 };
 
 export const GlobalContext = createContext<GlobalContextType | undefined>(
@@ -43,6 +46,7 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
   const [accessToken, setAccessToken] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editBlog, setEditBlog] = useState<BlogType | null>(null);
 
   useEffect(() => {
     const fetchAccessToken = async () => {
@@ -82,6 +86,8 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
         setIsLoading,
         isModalOpen,
         setIsModalOpen,
+        editBlog,
+        setEditBlog,
       }}
     >
       {children}

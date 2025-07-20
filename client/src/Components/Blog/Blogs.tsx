@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useGlobalContext } from "../../Context/GlobalContext";
 import { BlogType } from "../../Pages/Home";
-import BlogModal from "../BlogModal";
+import BlogModal from "./BlogModal";
 
 type BlogProps = {
   blogs: BlogType[];
@@ -12,7 +12,7 @@ export default function Blogs({ blogs }: BlogProps) {
   const [selectedBlog, setSelectedBlog] = useState<BlogType | null>(null);
 
   return (
-    <div className="flex flex-row gap-4 flex-wrap items-center justify-center">
+    <div className="flex flex-row gap-4 my-4 flex-wrap items-center justify-center">
       {blogs?.map((blog, index) => (
         <div
           key={index}

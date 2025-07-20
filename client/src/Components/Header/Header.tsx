@@ -6,7 +6,7 @@ export default function Header() {
     <>
       <header className="flex justify-between items-center h-10 p-0 bg-zinc-800 text-zinc-300">
         <Link className="bg-zinc-800 text-zinc-300 px-2" to="/">
-          Főoldal
+          Menő Logó
         </Link>
         <Navlinks />
       </header>

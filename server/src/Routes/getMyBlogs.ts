@@ -1,4 +1,4 @@
-import { Response, Request } from "express";
+import { Response } from "express";
 import BlogModel from "../DB/blogSchema";
 import { AuthenticatedRequest } from "../middlewares/verifyToken";
 

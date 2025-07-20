@@ -1,7 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 
 const navLinks = [
-  { href: "/my-blogs", title: "Blogjaim" },
+  { href: "/", title: "Főoldal" },
+  { href: "/blog/my", title: "Blogjaim" },
   { href: "/user", title: "Felhasználó" },
 ];
 

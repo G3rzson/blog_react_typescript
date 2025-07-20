@@ -2,17 +2,12 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../../Context/GlobalContext";
 import Modal from "../Modal";
+import { useState } from "react";
 
 export default function UserInfo() {
-  const {
-    errorMsg,
-    setErrorMsg,
-    user,
-    setAccessToken,
-    setUser,
-    setIsModalOpen,
-    isModalOpen,
-  } = useGlobalContext();
+  const { user, setAccessToken, setUser, setIsModalOpen, isModalOpen } =
+    useGlobalContext();
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleLogout = async () => {

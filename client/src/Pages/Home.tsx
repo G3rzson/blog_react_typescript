@@ -4,6 +4,7 @@ import { useGlobalContext } from "../Context/GlobalContext";
 import Blogs from "../Components/Blog/Blogs";
 
 export type BlogType = {
+  _id: string;
   title: string;
   content: string;
   author: string;
@@ -16,7 +17,7 @@ export default function Home() {
   useEffect(() => {
     async function fetchBlogs() {
       try {
-        const response = await axios.get("http://localhost:8000/blogs");
+        const response = await axios.get("http://localhost:8000/blog");
         //console.log(response);
         setBlogs(response.data.blogs); // feltételezve, hogy a válaszban a bloglista van
       } catch (err) {
@@ -40,7 +41,7 @@ export default function Home() {
     <>
       <h1 className="title">Blogok</h1>
 
-      {errorMsg && <p className="errorMsg">{errorMsg}</p>}
+      {errorMsg && <p className="errorMsg text-center">{errorMsg}</p>}
 
       <Blogs blogs={blogs} />
     </>
