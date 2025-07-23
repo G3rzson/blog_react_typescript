@@ -14,7 +14,7 @@ export default function EditBtn({ blogID }: EditBtnProps) {
 
   return (
     <button
-      className="bg-amber-500 hover:bg-amber-400 cursor-pointer rounded p-2 text-zinc-800 w-full"
+      className="bg-amber-500 hover:bg-amber-400 cursor-pointer rounded p-2 text-zinc-800 w-full duration-200"
       onClick={handleEdit}
     >
       Szerkesztés

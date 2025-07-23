@@ -46,7 +46,7 @@ export default function DeleteBtn({
   return (
     <>
       <button
-        className="bg-red-400 hover:bg-red-300 cursor-pointer rounded p-2 text-zinc-800 w-full"
+        className="bg-red-400 hover:bg-red-300 cursor-pointer rounded p-2 text-zinc-800 w-full duration-200"
         onClick={() => setIsModalOpen(true)}
       >
         Törlés

@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import DeleteBtn from "./DeleteBtn";
 import EditBtn from "./EditBtn";
-import { BlogType } from "../../Context/GlobalContext";
+import { BlogType, useGlobalContext } from "../../Context/GlobalContext";
 import Title from "../Title";
 import Loading from "../Loading";
 
 export default function OwnBlogs() {
   const [myBlogs, setMyBlogs] = useState<BlogType[] | []>([]);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const { user } = useGlobalContext();
 
   async function fetchBlogs() {
     try {
@@ -54,11 +55,13 @@ export default function OwnBlogs() {
               <p className="text-sm text-zinc-200 text-end">{blog.author}</p>
               <div className="flex flex-row items-center gap-4 justify-between">
                 <EditBtn blogID={blog._id} />
-                <DeleteBtn
-                  blogID={blog._id}
-                  onDelete={fetchBlogs}
-                  setErrorMsg={setErrorMsg}
-                />
+                {user && user.role === "admin" && (
+                  <DeleteBtn
+                    blogID={blog._id}
+                    onDelete={fetchBlogs}
+                    setErrorMsg={setErrorMsg}
+                  />
+                )}
               </div>
             </div>
           ))
