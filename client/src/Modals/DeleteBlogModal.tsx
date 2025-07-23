@@ -1,13 +1,16 @@
 import { useEffect } from "react";
-import { BlogType } from "../../Pages/Home";
 
 type ModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  blog: BlogType;
+  handleDelete: () => void;
 };
 
-const BlogModal: React.FC<ModalProps> = ({ isOpen, onClose, blog }) => {
+const DeleteBlogModal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  handleDelete,
+}) => {
   // Scroll tiltás
   useEffect(() => {
     if (isOpen) document.body.style.overflow = "hidden";
@@ -44,22 +47,24 @@ const BlogModal: React.FC<ModalProps> = ({ isOpen, onClose, blog }) => {
           isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"
         }`}
       >
-        <h2 id="modal-title" className="text-xl font-bold mb-4">
-          {blog.title}
-        </h2>
-        <p className="whitespace-pre-line text-wrap my-2 break-all">
-          {blog.content}
-        </p>
-        <p className="text-sm text-zinc-200 text-end">{blog.author}</p>
-        <button
-          onClick={onClose}
-          className="mt-4 px-4 py-2 cursor-pointer w-full bg-amber-500 text-zinc-800 rounded hover:bg-amber-400"
-        >
-          Bezárás
-        </button>
+        <h2 className="text-2xl text-center mb-4">Biztosan törli a blogot?</h2>
+        <div className="flex flex-row gap-6">
+          <button
+            onClick={handleDelete}
+            className="mt-4 px-4 py-2 cursor-pointer w-full text-zinc-800 bg-red-400 hover:bg-red-300 rounded"
+          >
+            Törlés
+          </button>
+          <button
+            onClick={onClose}
+            className="mt-4 px-4 py-2 cursor-pointer w-full bg-amber-500 text-zinc-800 rounded hover:bg-amber-400"
+          >
+            Mégse
+          </button>
+        </div>
       </div>
     </div>
   );
 };
 
-export default BlogModal;
+export default DeleteBlogModal;

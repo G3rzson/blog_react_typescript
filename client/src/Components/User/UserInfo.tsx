@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../../Context/GlobalContext";
-import Modal from "../Modal";
 import { useState } from "react";
+import Modal from "../../Modals/Modal";
 
 export default function UserInfo() {
   const { user, setAccessToken, setUser, setIsModalOpen, isModalOpen } =

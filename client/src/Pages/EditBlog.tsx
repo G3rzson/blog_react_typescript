@@ -3,6 +3,7 @@ import { useGlobalContext } from "../Context/GlobalContext";
 import { useEffect } from "react";
 import Loading from "../Components/Loading";
 import EditBlogForm from "../Components/Blog/EditBlogForm";
+import Title from "../Components/Title";
 
 export default function CreateBlog() {
   const { user, isLoading } = useGlobalContext();
@@ -23,7 +24,7 @@ export default function CreateBlog() {
   }
   return (
     <div>
-      <h1 className="title">Blog szerkesztése</h1>
+      <Title>Blog szerkesztése</Title>
       <EditBlogForm />
     </div>
   );

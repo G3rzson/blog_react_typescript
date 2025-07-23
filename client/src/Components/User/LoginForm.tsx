@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LoginFormData, loginFormSchema } from "../../Validation/loginUserForm";
 import { useGlobalContext } from "../../Context/GlobalContext";
-import Modal from "../Modal";
+import Modal from "../../Modals/Modal";
 import { useState } from "react";
 
 export default function LoginForm() {

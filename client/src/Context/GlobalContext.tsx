@@ -6,18 +6,22 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { BlogType } from "../Pages/Home";
 
 type User = {
   username: string;
   role: string;
 };
 
+export type BlogType = {
+  _id: string;
+  title: string;
+  content: string;
+  author: string;
+};
+
 type GlobalContextType = {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
-  errorMsg: string;
-  setErrorMsg: React.Dispatch<React.SetStateAction<string>>;
   accessToken: string;
   setAccessToken: React.Dispatch<React.SetStateAction<string>>;
   isLoading: boolean;
@@ -26,6 +30,8 @@ type GlobalContextType = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   editBlog: BlogType | null;
   setEditBlog: React.Dispatch<React.SetStateAction<BlogType | null>>;
+  blogs: [] | BlogType[];
+  setBlogs: React.Dispatch<React.SetStateAction<[] | BlogType[]>>;
 };
 
 export const GlobalContext = createContext<GlobalContextType | undefined>(
@@ -42,7 +48,7 @@ export function useGlobalContext() {
 
 export function GlobalProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [errorMsg, setErrorMsg] = useState("");
+  const [blogs, setBlogs] = useState<BlogType[] | []>([]);
   const [accessToken, setAccessToken] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -60,7 +66,6 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
         if (response.status === 200) {
           setUser(response.data.user);
           setAccessToken(response.data.accessToken);
-          setErrorMsg("");
           // Például: navigate("/my-blogs");
         }
       } catch (error) {
@@ -78,8 +83,6 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
       value={{
         user,
         setUser,
-        errorMsg,
-        setErrorMsg,
         accessToken,
         setAccessToken,
         isLoading,
@@ -88,6 +91,8 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
         setIsModalOpen,
         editBlog,
         setEditBlog,
+        blogs,
+        setBlogs,
       }}
     >
       {children}

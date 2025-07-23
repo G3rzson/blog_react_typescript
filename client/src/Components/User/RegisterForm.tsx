@@ -8,7 +8,7 @@ import {
 } from "../../Validation/registerUserForm";
 import { useEffect, useState } from "react";
 import { useGlobalContext } from "../../Context/GlobalContext";
-import Modal from "../Modal";
+import Modal from "../../Modals/Modal";
 
 export default function RegisterForm() {
   const { setIsModalOpen, isModalOpen } = useGlobalContext();

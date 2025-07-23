@@ -1,4 +1,4 @@
-import Loading from "./Loading";
+import Loading from "../Components/Loading";
 
 type ModalProps = {
   isOpen: boolean;

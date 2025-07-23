@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
+import Title from "../Components/Title";
 
 export default function NotFound() {
   return (
-    <div className="mt-40 flex flex-col items-center gap-8">
-      <h1 className="text-4xl">404 | Page not found</h1>
+    <div className="h-[calc(100vh-36px-40px)] flex flex-col items-center justify-center gap-2">
+      <Title>404 | Page not found</Title>
       <Link
         className="text-2xl border-2 border-red-400 rounded cursor-pointer py-2 px-4"
         to={"/"}

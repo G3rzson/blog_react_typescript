@@ -3,9 +3,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useGlobalContext } from "../../Context/GlobalContext";
-import Modal from "../Modal";
+
 import { BlogFormData, blogFormSchema } from "../../Validation/blogForm";
 import { useEffect, useState } from "react";
+import Modal from "../../Modals/Modal";
 
 export default function EditBlogForm() {
   const { setIsModalOpen, isModalOpen } = useGlobalContext();

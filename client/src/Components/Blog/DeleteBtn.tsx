@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useGlobalContext } from "../../Context/GlobalContext";
+import DeleteBlogModal from "../../Modals/DeleteBlogModal";
 
 type DeleteBtnProps = {
   blogID: string;
@@ -12,10 +13,9 @@ export default function DeleteBtn({
   onDelete,
   setErrorMsg,
 }: DeleteBtnProps) {
-  const { setIsModalOpen } = useGlobalContext();
+  const { isModalOpen, setIsModalOpen } = useGlobalContext();
+
   async function handleDelete() {
-    //console.log(blogID);
-    setIsModalOpen(true);
     try {
       const response = await axios.delete(
         `http://localhost:8000/blog/delete/${blogID}`,
@@ -38,15 +38,26 @@ export default function DeleteBtn({
         console.error("Nem várt hiba:", err);
         setErrorMsg("Nem várt hiba történt.");
       }
+    } finally {
+      setIsModalOpen(false);
     }
   }
 
   return (
-    <button
-      className="bg-red-400 hover:bg-red-300 cursor-pointer rounded p-2 text-zinc-800 w-full"
-      onClick={handleDelete}
-    >
-      Törlés
-    </button>
+    <>
+      <button
+        className="bg-red-400 hover:bg-red-300 cursor-pointer rounded p-2 text-zinc-800 w-full"
+        onClick={() => setIsModalOpen(true)}
+      >
+        Törlés
+      </button>
+      <DeleteBlogModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+        }}
+        handleDelete={handleDelete}
+      />
+    </>
   );
 }
