@@ -56,10 +56,16 @@ export async function loginUser(req: Request, res: Response) {
     }
 
     // access token létrehozása
-    const accessToken = generateAccessToken(username);
+    const accessToken = generateAccessToken(
+      existingUser.username,
+      existingUser.role
+    );
 
     // refresh token létrehozása
-    const refreshToken = generateRefreshToken(username);
+    const refreshToken = generateRefreshToken(
+      existingUser.username,
+      existingUser.role
+    );
 
     // válasz küldése cookie beállítása
     res

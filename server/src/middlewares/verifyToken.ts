@@ -6,6 +6,7 @@ dotenv.config();
 // Először egy új interfész:
 export interface AuthenticatedRequest extends Request {
   username?: string;
+  role?: string;
 }
 
 export function verifyToken(
@@ -27,9 +28,11 @@ export function verifyToken(
   try {
     const decoded = jwt.verify(token, process.env.REFRESH_TOKEN) as {
       user: string;
+      role: string;
     };
     //console.log(decoded);
     req.username = decoded.user;
+    req.role = decoded.role;
     next();
   } catch (err) {
     res.status(403).json({ message: "Érvénytelen token!" });

@@ -3,10 +3,13 @@ dotenv.config();
 import jwt from "jsonwebtoken";
 
 // Access token generálása
-export function generateAccessToken(user: string): string | undefined {
-  if (!process.env.ACCESS_TOKEN) {
-    console.error("Hiányzó ACCESS_TOKEN környezeti változó");
-    return undefined;
+export function generateAccessToken(user: string, role: string): string {
+  const secret = process.env.ACCESS_TOKEN;
+  if (!secret) {
+    throw new Error("Hiányzó ACCESS_TOKEN környezeti változó");
   }
-  return jwt.sign({ user }, process.env.ACCESS_TOKEN, { expiresIn: "5m" });
+
+  return jwt.sign({ user, role }, secret, {
+    expiresIn: "5m",
+  });
 }

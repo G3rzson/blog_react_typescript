@@ -5,23 +5,22 @@ import { AuthenticatedRequest } from "../middlewares/verifyToken";
 export async function deleteBlog(req: AuthenticatedRequest, res: Response) {
   const blogId = req.params.id;
 
-  const username = req.username;
-  if (!username) {
-    res
-      .status(401)
-      .json({ success: false, error: "Hiányzó felhasználói név!" });
+  const role = req.role;
+  if (!role) {
+    res.status(401).json({ success: false, error: "Hiányzó engedély!" });
     return;
   }
 
   try {
-    // Blog keresése és jogosultság ellenőrzés
+    // Blog keresése
     const blog = await BlogModel.findById(blogId);
     if (!blog) {
       res.status(404).json({ success: false, error: "Blog nem található!" });
       return;
     }
 
-    if (blog.author !== username) {
+    // Jogosultság ellenőrzés: csak admin törölhet
+    if (role !== "admin") {
       res.status(403).json({
         success: false,
         error: "Nincs jogosultságod törölni ezt a blogot!",
